@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devpredator.tiendamusicalreportes.services.DropboxAPIService;
+import com.devpredator.tiendamusicalreportes.services.MailService;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 
@@ -27,6 +28,9 @@ public class ReportesWS {
 	@Autowired
 	private DropboxAPIService dropboxAPIServiceImpl;
 	
+	//servicio de correos
+	@Autowired
+	private MailService mailServiceImpl;
 	
 	//http://localhost:8080/tiendamusical-reportes/devpredator/reportesWS/pruebasWS
 	@GET
@@ -46,6 +50,8 @@ public class ReportesWS {
 		DbxClientV2 dbxClientV2 = new DbxClientV2(dbxRequestConfig,ACCESS_TOKEN);
 		
 		Response response = this.dropboxAPIServiceImpl.descargarReporte(dbxClientV2, orderId, cliente);
+		
+		Response responseEmail =  this.mailServiceImpl.enviarEmail(dbxClientV2, destinatario, cliente, orderId);
 		
 		return response;
 	}
